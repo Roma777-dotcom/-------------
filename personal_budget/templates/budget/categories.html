@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Категории - Личный бюджет{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Добавить категорию</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Тип</label>
+                        {{ form.type }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Цвет</label>
+                        {{ form.color }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Добавить категорию</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Категории доходов</h5>
+            </div>
+            <div class="card-body">
+                {% if income_categories %}
+                    <ul class="list-group">
+                        {% for category in income_categories %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <span class="category-color" style="background-color: {{ category.color }}"></span>
+                                {{ category.name }}
+                            </span>
+                            <form method="post" action="{% url 'delete_category' category.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить категорию?')">
+                                    Удалить
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Нет категорий доходов</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Категории расходов</h5>
+            </div>
+            <div class="card-body">
+                {% if expense_categories %}
+                    <ul class="list-group">
+                        {% for category in expense_categories %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <span class="category-color" style="background-color: {{ category.color }}"></span>
+                                {{ category.name }}
+                            </span>
+                            <form method="post" action="{% url 'delete_category' category.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить категорию?')">
+                                    Удалить
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Нет категорий расходов</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

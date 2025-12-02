@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}Дашборд - Личный бюджет{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Операции за {{ current_month }}</h5>
+                <a href="{% url 'add_operation' %}" class="btn btn-primary btn-sm">+ Добавить</a>
+            </div>
+            <div class="card-body">
+                {% if operations %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Категория</th>
+                                    <th>Описание</th>
+                                    <th class="text-end">Сумма</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for operation in operations %}
+                                <tr>
+                                    <td>{{ operation.date|date:"d.m.Y H:i" }}</td>
+                                    <td>
+                                        <span class="category-color" style="background-color: {{ operation.category.color }}"></span>
+                                        {{ operation.category.name }}
+                                    </td>
+                                    <td>{{ operation.description|default:"-"|truncatechars:30 }}</td>
+                                    <td class="text-end {% if operation.category.type == 'income' %}income{% else %}expense{% endif %}">
+                                        {% if operation.category.type == 'income' %}+{% else %}-{% endif %}
+                                        {{ operation.amount }} руб.
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'delete_operation' operation.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить операцию?')">
+                                                Удалить
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Нет операций за текущий месяц</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Финансовый обзор</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="balance {% if balance >= 0 %}income{% else %}expense{% endif %}">
+                        {{ balance }} руб.
+                    </div>
+                    <small class="text-muted">Баланс</small>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Доходы:</span>
+                        <span class="income">{{ total_income }} руб.</span>
+                    </div>
+                    <div class="progress mt-1" style="height: 10px;">
+                        {% with total=total_income|add:total_expense %}
+                            {% if total > 0 %}
+                                {% widthratio total_income total 100 as income_percent %}
+                                <div class="progress-bar bg-success" style="width: {{ income_percent }}%"></div>
+                            {% else %}
+                                <div class="progress-bar bg-success" style="width: 0%"></div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Расходы:</span>
+                        <span class="expense">{{ total_expense }} руб.</span>
+                    </div>
+                    <div class="progress mt-1" style="height: 10px;">
+                        {% with total=total_income|add:total_expense %}
+                            {% if total > 0 %}
+                                {% widthratio total_expense total 100 as expense_percent %}
+                                <div class="progress-bar bg-danger" style="width: {{ expense_percent }}%"></div>
+                            {% else %}
+                                <div class="progress-bar bg-danger" style="width: 0%"></div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Статистика по категориям расходов</h5>
+            </div>
+            <div class="card-body">
+                {% if expense_stats %}
+                    <!-- Вычисляем общую сумму в шаблоне через цикл -->
+                    {% with total_sum=0 %}
+                        {% for stat in expense_stats %}
+                            {% with total_sum=total_sum|add:stat.total %}
+                            {% endwith %}
+                        {% endfor %}
+                    {% endwith %}
+                    
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h6 class="mb-1">Общая сумма расходов:</h6>
+                                <div class="expense display-6">{{ total_sum|floatformat:2 }}</div>
+                                <small class="text-muted">рублей</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <h6 class="mb-3">Распределение по категориям:</h6>
+                            
+                            {% for stat in expense_stats %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="d-flex align-items-center">
+                                        <span class="category-color me-2" 
+                                              style="background-color: {{ stat.category__color }};
+                                                     width: 12px; height: 12px; 
+                                                     border-radius: 2px;"></span>
+                                        <span>{{ stat.category__name }}</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="expense">{{ stat.total|floatformat:2 }} руб.</div>
+                                        {% if total_sum > 0 %}
+                                            <small class="text-muted">
+                                                {% widthratio stat.total total_sum 100 %}%
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                {% if total_sum > 0 %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" 
+                                         style="width: {% widthratio stat.total total_sum 100 %}%; 
+                                                background-color: {{ stat.category__color }};"></div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <div class="text-muted mb-2">📊</div>
+                        <p class="text-muted mb-0">Нет расходов за текущий месяц</p>
+                        <small class="text-muted">Добавьте первую операцию расхода</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if expense_stats %}
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    {% for stat in expense_stats %}
+                        '{{ stat.category__name }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    data: [
+                        {% for stat in expense_stats %}
+                            {{ stat.total }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: [
+                        {% for stat in expense_stats %}
+                            '{{ stat.category__color }}',
+                        {% endfor %}
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        {% endif %}
+    });
+</script>
+{% endblock %}

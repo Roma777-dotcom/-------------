@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Регистрация - Личный бюджет{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-plus"></i> Создание аккаунта
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="h1 text-primary mb-3">💰</div>
+                    <h3>Добро пожаловать!</h3>
+                    <p class="text-muted">
+                        Зарегистрируйтесь, чтобы начать управлять своими финансами
+                    </p>
+                </div>
+                
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-person-circle"></i> Имя пользователя
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Только буквы, цифры и @/./+/-/_
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-envelope"></i> Email адрес
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-lock"></i> Пароль
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.password.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-lock-fill"></i> Подтверждение пароля
+                            </label>
+                            {{ form.password_confirm }}
+                            {% if form.password_confirm.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.password_confirm.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle"></i> Зарегистрироваться
+                        </button>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                            Уже есть аккаунт? Войти
+                        </a>
+                    </div>
+                </form>
+                
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="text-center text-muted mb-3">Регистрируясь, вы соглашаетесь:</h6>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-1">
+                            <i class="bi bi-check text-success"></i>
+                            С условиями использования сервиса
+                        </li>
+                        <li class="mb-1">
+                            <i class="bi bi-check text-success"></i>
+                            С политикой конфиденциальности
+                        </li>
+                        <li>
+                            <i class="bi bi-check text-success"></i>
+                            На обработку персональных данных
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'home' %}" class="text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    input.form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s;
+    }
+    input.form-control:focus {
+        border-color:rgb(12, 30, 192);
+        box-shadow: 0 0 0 0.2rem rgba(17, 184, 81, 0.25);
+    }
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .btn-lg {
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

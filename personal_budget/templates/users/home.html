@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Личный бюджет - Учет финансов{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h1 class="display-4 mb-4 text-primary">💰 Личный бюджет</h1>
+                    <p class="lead mb-4">
+                        Простой и удобный сервис для учета ваших доходов и расходов.
+                        Контролируйте финансы, анализируйте траты и планируйте бюджет.
+                    </p>
+                    
+                    <div class="row mt-5">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <h3 class="card-title text-success">
+                                        <i class="bi bi-graph-up"></i> Статистика
+                                    </h3>
+                                    <p class="card-text">
+                                        Наглядные графики и отчеты по вашим расходам и доходам.
+                                        Отслеживайте динамику финансов.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <h3 class="card-title text-info">
+                                        <i class="bi bi-tags"></i> Категории
+                                    </h3>
+                                    <p class="card-text">
+                                        Гибкая система категорий для удобной классификации операций.
+                                        Настройте под свои нужды.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <h3 class="card-title text-warning">
+                                        <i class="bi bi-calendar-check"></i> Ежемесячный баланс
+                                    </h3>
+                                    <p class="card-text">
+                                        Автоматический расчет баланса за текущий месяц.
+                                        Всегда знайте свой финансовый результат.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <h3 class="card-title text-danger">
+                                        <i class="bi bi-shield-check"></i> Безопасность
+                                    </h3>
+                                    <p class="card-text">
+                                        Ваши данные защищены. Каждый пользователь видит только свои операции.
+                                        Приватность гарантирована.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h4 class="mb-4">Начните управлять своими финансами уже сегодня!</h4>
+                        <div class="d-grid gap-3 d-md-block">
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5 me-2">
+                                <i class="bi bi-person-plus"></i> Зарегистрироваться
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-5">
+                                <i class="bi bi-box-arrow-in-right"></i> Войти
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center mb-3">
+                                    <div class="h2 text-success">💰</div>
+                                    <h5>Учет доходов</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center mb-3">
+                                    <div class="h2 text-danger">💳</div>
+                                    <h5>Контроль расходов</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center mb-3">
+                                    <div class="h2 text-primary">📊</div>
+                                    <h5>Аналитика</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-muted">
+                <small>
+                    Простой и эффективный способ следить за своими финансами.
+                    Подходит для студентов, семей и всех, кто хочет контролировать бюджет.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    .card {
+        transition: transform 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}

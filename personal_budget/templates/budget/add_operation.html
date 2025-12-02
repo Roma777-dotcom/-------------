@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Добавить операцию - Личный бюджет{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Добавить операцию</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Категория</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Сумма</label>
+                        {{ form.amount }}
+                        <div class="form-text">Введите сумму операции</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Дата и время</label>
+                        {{ form.date }}
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Добавить операцию</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
